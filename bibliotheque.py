@@ -1,3 +1,4 @@
+import re
 library = {
 "978-2070415731": ("L'Étranger", ["Littérature", "Philosophie"]),
 "978-2253006329": ("Le Petit Prince", ["Jeunesse", "Conte"]),
@@ -100,9 +101,8 @@ library = {
 "978-2266121040": ("Fondation et Empire", ["Science-Fiction"]),
 "978-2070419012": ("Les Justes", ["Théâtre", "Politique"])
 }
-# structure ISBN : ( titre , [catégories])
 
-
+# Utilisation de regex car Odoo aime les regex
 def search_by_title(title : str, list_to_search):
     """
         Function to search in the library the books that the title starts with the parameter.
@@ -113,10 +113,20 @@ def search_by_title(title : str, list_to_search):
         :type list_to_search: List
         :return: A new list containing the results of the search. Empty List if nothing found.
     """
+    
     search_result = []
     for book in list_to_search :
-        if book[1][0].upper().startswith(title.upper()):
+        #re est une librairie pour les regex à importer
+        # .search méthode pour chercher dans la chaine de caractères
+        # ^ indique qu'on veut chercher le début de la chaine
+        # re.IGNORECASE indique qu'on ne prend pas compte des minuscules et majuscules
+        # ça renvoie None si l'élément ne correspond pas au regex
+        if re.search(f"^{title}", book[1][0], re.IGNORECASE) != None:
             search_result.append(book)
+
+        #méthode sans regex
+        #if book[1][0].upper().startswith(title.upper()):
+            
     return search_result
 
 
@@ -148,6 +158,7 @@ def page_chooser(books, page=1):
     page_result = books[(page-1)*10:page*10]
 
     return page_result
+    #normalement on ne renvoie pas seulement la liste. On renvoie un dictionnaire avec la liste, le nombres de paes total, le numéro de la page ou l'on se trouve,
 
 
 def search(params : dict):
