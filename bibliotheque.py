@@ -107,8 +107,10 @@ def search_by_title(title : str, list_to_search):
     """
         Function to search in the library the books that the title starts with the parameter.
 
-        :param a: The text we want to search
-        :type a: str
+        :param title: The text we want to search
+        :type title: str
+        :param list_to_search: The list in which the search will be made
+        :type list_to_search: List
         :return: A new list containing the results of the search. Empty List if nothing found.
     """
     search_result = []
@@ -122,8 +124,8 @@ def filter_by_category(category : str, list_to_search):
     """
         Function that search book having a certain category.
 
-        :param a: The category name for the filter. Should be the exact one.
-        :type a: str
+        :param category: The category name for the filter. Should be the exact one.
+        :type category: str
         :return: A new list with the results.
     """
     search_result = []
@@ -137,26 +139,25 @@ def page_chooser(books, page=1):
     """
         Function that select the page we want to show
 
-        :param a: The complete list of books
-        :type a: List[tuple(title,List[categories])]
-        :param b: the page number
-        :type b: int
+        :param books: The complete list of books
+        :type books: List[tuple(title,List[categories])]
+        :param page: the page number. By default it's 1
+        :type page: int
         :return: the list of items for the selected page
     """
     page_result = books[(page-1)*10:page*10]
-    # if len(books) <= 10:
-    #     page_result = books
-    # elif len(books)>= page * 10:
-    #     for i in range(page * 10 -1, page * 10 -10 -1, -1):
-    #         page_result.append(books[i])
-    #     page_result.reverse()
-    # else:
-    #     print("La page demandée n'existe pas, pas assez de résultats.")
 
     return page_result
 
 
 def search(params : dict):
+    """
+        Function that search with all the params
+
+        :param params: dictionnary containing each params for the filter. Can be empty.
+        :type params: Dict
+        :return: The fully filtered list
+    """
     list_to_search = list(library.items())
     if "title" in params:
         list_to_search = search_by_title(params.get("title"), list_to_search)
@@ -170,6 +171,12 @@ def search(params : dict):
 
 
 def display_result(results):
+    """
+        Function that displays the books with good layout
+
+        :param results: the list to display
+        :type results: List
+    """
     if len(results)!=0:
         for book in results:
             print(f"ISBN : {book[0]} - Title : {book[1][0]} - Category(ies) : {book[1][1]}")
@@ -177,6 +184,9 @@ def display_result(results):
         print("Aucun résultat pour la recherche")
 
 def start():
+    """
+        Function to start the search. We can keep going for another search until we press n at "keep searching"
+    """
     keep_using = True
     while(keep_using):
         params = {}
