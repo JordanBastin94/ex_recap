@@ -34,36 +34,100 @@ def get_neighbors(rows, cols, r, c):
         :type c: int
         :return: a list with the coordinates of each neighbor
     """
-    neighbors = []
+    neighbors = set()
     for i in range(-1,2,1):
         for j in range (-1,2,1):
             if (i !=0 or j!=0) and (r+i>=0 and c+j>=0) and (r+i<rows and c+j< cols):
-                neighbors.append((r+i,c+j))
+                neighbors.add((r+i,c+j))
     return neighbors
     
 
 def generate_mines(rows, cols, nb_mines, forbidden_cell):
     """
-        function that generate where to place the mines randomly.
-    """
-    mines = []
+        function that places the mines randomly.
 
-    for i in range (0,nb_mines):
-        pass
-    
-    pass
+        :param rows: the number of rows in our grid
+        :type rows: int
+        :param cols: the number of columns in our grid
+        :type cols: int
+        :param nb_mines: the number of mines we want to put on our grid
+        :type nb_mines: int
+        :param forbidden_cell: A specified cell that cannot be a mine
+        :type forbidden_cell: a tuple with coordinates
+        :return: a Tuple containing the coordinates of all the mines
+    """
+    mines = set()
+    while(len(mines)<nb_mines):
+        new_mine = (random.randint(0,rows-1),random.randint(0,cols-1))
+        if new_mine != forbidden_cell:
+            mines.add(new_mine)
+    return mines
 
 def create_hidden_grid(rows, cols, mines):
-    pass
+    """
+        Function that create a grid, invisible to the user, where all the mines and numbers are written
+
+        :param rows: the number of rows on our grid
+        :type rows: int
+        :param cols: the number of columns on our grid
+        :type cols: int
+        :param mines: the tuple containing the coordinates of the mines
+        :type mines: tuple containing tuples of coordinates
+        :return: the list containing all the answers
+    """
+    hidden_grid = create_grid(rows,cols,0)
+
+    for coord in mines:
+        hidden_grid[coord[0]][coord[1]] = "*"
+
+    for i in range (rows):
+        for j in range(cols):
+            if (i,j) not in mines:
+                neighbors = get_neighbors(rows, cols, i, j)
+                hidden_grid[i][j]= len(neighbors.intersection(mines))
+
+    return hidden_grid
+
 
 def reveal(hidden, visible, r, c):
+    """
+        Function that reaveal a case on click. if 0, reveals also the neighbors that are 0.
+
+        :param hidden: the List of all the cells with the solutions, hidden to the user.
+        :type hidden: List
+        :param visible: the List of all the cells displayed to the user.
+        :type visible: List
+        :param r: the index of the row clicked by the user
+        :type r: int
+        :param c: the index of the column clicked by the user
+        :type c: int
+    """
     pass
 
 def print_grid(grid):
+    """
+        Function to display the grid in the console.
+
+        :param grid: The grid to display
+        :type grid: List[List[str]]
+        :return: None
+    """
     pass
 
 def has_won(hidden, visible):
+    """
+        Function that returns True if all the non-mined cases are revealed.
+
+        :param hidden: The grid containing the solutions, hidden to the user.
+        :type hidden: List[List[str]]
+        :param visible: The grid displayed to the user in the console
+        :type visible: List[List[str]]
+        :return: bool
+    """
     pass
 
 def minesweeper(rows, cols, nb_mines):
+    """
+        Function to start a game of minesweeper
+    """
     pass
