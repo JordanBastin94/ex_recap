@@ -1,3 +1,4 @@
+#librairie pour les regex
 import re
 library = {
 "978-2070415731": ("L'Étranger", ["Littérature", "Philosophie"]),
@@ -116,7 +117,7 @@ def search_by_title(title : str, list_to_search):
     
     search_result = []
     for book in list_to_search :
-        #re est une librairie pour les regex à importer
+        # re est une librairie pour les regex à importer
         # .search méthode pour chercher dans la chaine de caractères
         # ^ indique qu'on veut chercher le début de la chaine
         # re.IGNORECASE indique qu'on ne prend pas compte des minuscules et majuscules
@@ -157,8 +158,14 @@ def page_chooser(books, page=1):
     """
     page_result = books[(page-1)*10:page*10]
 
-    return page_result
-    #normalement on ne renvoie pas seulement la liste. On renvoie un dictionnaire avec la liste, le nombres de paes total, le numéro de la page ou l'on se trouve,
+    datas = {
+        "results" : page_result,
+        "page" : page,
+        "total_results" : len(books)
+    }
+
+    return datas
+    
 
 
 def search(params : dict):
@@ -212,7 +219,7 @@ def start():
             params.setdefault("page",int(user_page))
 
         books = search(params)
-        display_result(books)
+        display_result(books['results'])
 
         keep_using = True if input("Keep searching ? (y-n) : ") == 'y' else False
 
