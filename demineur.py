@@ -11,6 +11,7 @@ def create_grid(rows, cols, value):
         :type cols: int
         :param value: What we want to display in each cell
         :type value: str
+        :return: The created grid
     """
     grid = []
     for i in range(rows):
@@ -102,7 +103,21 @@ def reveal(hidden, visible, r, c):
         :param c: the index of the column clicked by the user
         :type c: int
     """
+    if visible[r][c] != "?":
+        return
+
+    visible[r][c] = hidden[r][c]
     pass
+
+    if hidden[r][c] == "*":
+        return
+    elif hidden[r][c] != 0:
+        return
+
+    neighbors = get_neighbors(len(hidden),len(hidden[0]),r,c)
+    for neighbor in neighbors:
+        reveal(hidden,visible,neighbor[0],neighbor[1])
+
 
 def print_grid(grid):
     """
@@ -112,11 +127,12 @@ def print_grid(grid):
         :type grid: List[List[str]]
         :return: None
     """
-    pass
+    for row in grid :
+        print(" ".join(str(cell) for cell in row))
 
 def has_won(hidden, visible):
     """
-        Function that returns True if all the non-mined cases are revealed.
+        Function that returns True if all the non-mined cells are revealed.
 
         :param hidden: The grid containing the solutions, hidden to the user.
         :type hidden: List[List[str]]
@@ -124,10 +140,52 @@ def has_won(hidden, visible):
         :type visible: List[List[str]]
         :return: bool
     """
-    pass
+    for i in range(len(hidden)):
+        for j in range(len(hidden[0])):
+            if visible[i][j] == "?" and hidden[i][j] != "*":
+                return False
+
+    return True
 
 def minesweeper(rows, cols, nb_mines):
     """
         Function to start a game of minesweeper
     """
-    pass
+    visible = create_grid(rows, cols, "?")
+    hidden = None
+    game_on = True
+
+    while game_on :
+        print_grid(visible)
+
+        print("Commandes :")
+        print("o ligne colonne → ouvrir une case")
+        print("f ligne colonne → poser/retirer un drapeau")
+        command = input("> ")
+
+        parts = command.split()
+
+        action = parts[0]
+        r = int(parts[1])
+        c = int(parts[2])
+        
+        if action == "o":
+            if hidden is None:
+                mines = generate_mines(rows,cols,nb_mines,(r,c))
+                hidden = create_hidden_grid(rows,cols,mines)
+            reveal(hidden,visible,r,c)
+
+            if hidden[r][c] == "*":
+                print("Perdu !")
+                print_grid(hidden)
+                game_on=False
+            if has_won(hidden, visible):
+                print("Gagné !")
+                game_on = False
+        else :
+            if visible[r][c] == "?":
+                visible[r][c] = "F"
+            elif visible[r][c] == "F":
+                visible[r][c] = "?"
+
+minesweeper(3,4,3)
